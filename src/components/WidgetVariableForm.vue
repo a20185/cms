@@ -49,7 +49,7 @@ export default defineComponent({
         });
       },
       validator(_: any, value: string, cb: (val?: string) => void) {
-        if (value.split(/\&\&/).length !== 2) {
+        if (value.split(WidgetService.variableToken).length !== 2) {
           cb("请按照 内容 && 注解 的方式进行变量更改");
         } else {
           cb();

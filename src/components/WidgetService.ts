@@ -1,7 +1,35 @@
 import { ref } from "@vue/composition-api";
 
+/**
+ * 小部件服务
+ *
+ * @export
+ * @class WidgetService
+ */
 export default class WidgetService {
-  static seperateToken = "&&&";
+  /**
+   * 分隔内容的 token
+   *
+   * @static
+   * @memberof WidgetService
+   */
+  static seperateToken = /\&\&\-.*\-\&\&/g;
+
+  /**
+   * 匹配内容的 token
+   *
+   * @static
+   * @memberof WidgetService
+   */
+  static matchToken = /(?<=\&\&\-).*(?=\-\&\&)/g;
+
+  /**
+   * 分隔变量的 token
+   *
+   * @static
+   * @memberof WidgetService
+   */
+  static variableToken = /\&\&/;
   html = ref("");
   script = ref("");
 
@@ -23,12 +51,11 @@ export default class WidgetService {
    * @memberof WidgetService
    */
   genSnippetsAndVariables() {
-    this.htmlSnippets = this.html.value.split(/\&\&\-.*\-\&\&/g);
-    this.scriptSnippets = this.script.value.split(/\&\&\-.*\-\&\&/g);
-    this.htmlVariables =
-      this.html.value.match(/(?<=\&\&\-).*(?=\-\&\&)/g) || [];
+    this.htmlSnippets = this.html.value.split(WidgetService.seperateToken);
+    this.scriptSnippets = this.script.value.split(WidgetService.seperateToken);
+    this.htmlVariables = this.html.value.match(WidgetService.matchToken) || [];
     this.scriptVariables =
-      this.script.value.match(/(?<=\&\&\-).*(?=\-\&\&)/g) || [];
+      this.script.value.match(WidgetService.matchToken) || [];
   }
 
   /**
@@ -44,7 +71,9 @@ export default class WidgetService {
       throw new Error("template format error");
     let result = snippets[0];
     for (let key in variables) {
-      result += variables[key].split(/\&\&/)[0] + snippets[parseInt(key) + 1];
+      result +=
+        variables[key].split(WidgetService.variableToken)[0] +
+        snippets[parseInt(key) + 1];
     }
     return result;
   }
