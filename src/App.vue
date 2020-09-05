@@ -2,7 +2,8 @@
 import { defineComponent, reactive, ref } from "@vue/composition-api";
 import TemplateDisplay from "@/components/TemplateDisplay.vue";
 
-import temps, { TemplateService } from "./templates";
+import temps from "./templates";
+import TemplateService from "./templates/TemplateService";
 export default defineComponent({
   name: "App",
   components: { TemplateDisplay },

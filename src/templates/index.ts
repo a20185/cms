@@ -1,8 +1,5 @@
-import { reactive, ref, watch, Ref } from "@vue/composition-api";
+import { reactive, ref, watch, Ref, computed } from "@vue/composition-api";
 import Variable from "./Variable";
-import ejs from "ejs";
-
-const DILIMITER = "?";
 
 const templates = require.context("./", true, /\.ejs$/);
 const variables = require.context("./", true, /\.ts$/);
@@ -32,56 +29,6 @@ scripts.keys().map((key) => {
     js[token as string] = scripts(key);
   }
 });
-
-/**
- * ejs 模板操作结构
- *
- * @export
- * @class TemplateService
- */
-export class TemplateService {
-  template: string;
-  variables: Variable[];
-  js: string;
-
-  /**
-   * 最后的渲染结果
-   *
-   * @memberof TemplateService
-   */
-  html: Ref<string>;
-
-  /**
-   * as a model
-   *
-   * @memberof TemplateService
-   */
-  config: { [key: string]: string };
-  constructor(template: string, variables: Variable[], js: string) {
-    this.template = template;
-    this.variables = variables;
-    this.js = js;
-    this.html = ref("");
-    const config: { [key: string]: string } = {};
-    for (let item of this.variables) {
-      config[item.name] = item.initialValue || "";
-    }
-    this.config = reactive<{ [key: string]: string }>(config);
-    // 页面首次展示时，渲染一遍
-    this.render();
-    // config 改变时 重新渲染
-    watch(this.config, () => {
-      this.render();
-    });
-  }
-
-  private render() {
-    const newConfig = { ...this.config };
-    this.html.value = ejs.render(this.template, newConfig, {
-      delimiter: DILIMITER,
-    });
-  }
-}
 
 // 导出符合 service 配置项的结构
 let result: { [key: string]: [string, Variable[], string] } = {};
