@@ -9,9 +9,8 @@ export default defineComponent({
   name: "App",
   components: { TemplateDisplay, TemplateForm },
   setup() {
-    const testTemplate = new TemplateService(...temps.test);
     return {
-      testTemplate,
+      testTemplate: new TemplateService(...temps.test),
     };
   },
 });
