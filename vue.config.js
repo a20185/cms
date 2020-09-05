@@ -7,4 +7,6 @@ module.exports = {
       ],
     },
   },
+
+  runtimeCompiler: true
 };
