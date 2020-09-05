@@ -154,6 +154,7 @@ export default class TemplateService {
       "src",
       "https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"
     );
+    bootStrapCoreJs.setAttribute("defer", "defer");
     return [bootstrapCoreCss, jquery, bootStrapCoreJs];
   }
 
