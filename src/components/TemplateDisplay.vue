@@ -8,7 +8,6 @@ import {
   watch,
   nextTick,
 } from "@vue/composition-api";
-import WidgetService from "./WidgetService";
 export default defineComponent({
   name: "Widget",
   props: ["template"],

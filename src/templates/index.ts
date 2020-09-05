@@ -1,5 +1,4 @@
-import { reactive, ref, watch, Ref, computed } from "@vue/composition-api";
-import Variable from "./Variable";
+import { Variable } from "./TemplateService";
 
 const templates = require.context("./", true, /\.ejs$/);
 const variables = require.context("./", true, /\.ts$/);

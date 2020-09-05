@@ -1,4 +1,4 @@
-import Variable from "../Variable";
+import { Variable } from "../TemplateService";
 
 const variable: Variable[] = [
   {

@@ -13,9 +13,8 @@ export default defineComponent({
   name: "TemplateForm",
   props: ["template"],
   setup(props: { template: TemplateService }, ctx: SetupContext) {
-    const formService = new TemplateFormService(props.template, ctx.root);
     return {
-      formService,
+      formService: new TemplateFormService(props.template, ctx.root),
     };
   },
 });

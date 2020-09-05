@@ -1,6 +1,12 @@
 import TemplateService from "@/templates/TemplateService";
 import { WrappedFormUtils } from "ant-design-vue/types/form/form";
 
+/**
+ * 模板配置表单服务
+ *
+ * @export
+ * @class TemplateFormService
+ */
 export default class TemplateFormService {
   template: TemplateService;
   root: any;
@@ -37,6 +43,12 @@ export default class TemplateFormService {
     return this.template.config[key] || undefined;
   }
 
+  /**
+   * 表单项配置逻辑提交
+   *
+   * @param {Event} e
+   * @memberof TemplateFormService
+   */
   submit(e: Event) {
     e.preventDefault();
     this.configForm.validateFields((_, val) => {
