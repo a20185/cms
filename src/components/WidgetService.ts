@@ -2,6 +2,7 @@ import { ref } from "@vue/composition-api";
 
 /**
  * 小部件服务
+ * !deprecated
  *
  * @export
  * @class WidgetService

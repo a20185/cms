@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent, SetupContext } from "@vue/composition-api";
 import WidgetService from "./WidgetService";
+
+// !deprecated
 export default defineComponent({
   name: "WidgetVariableForm",
   props: ["widget"],
