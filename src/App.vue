@@ -18,8 +18,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <template-display :template="testTemplate"></template-display>
-    <template-form :template="testTemplate"></template-form>
-  </div>
+  <a-space>
+    <a-card>
+      <template-display :template="testTemplate"></template-display>
+    </a-card>
+    <a-card>
+      <template-form :template="testTemplate"></template-form>
+    </a-card>
+  </a-space>
 </template>
