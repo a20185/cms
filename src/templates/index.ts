@@ -14,7 +14,9 @@ let js: { [key: string]: string } = {};
 
 templates.keys().map((key) => {
   const token = key.match(/(?<=\/)[a-zA-Z0-9]*(?=.ejs)/)?.[0];
-  tems[token as string] = templates(key);
+  if (token) {
+    tems[token as string] = templates(key);
+  }
 });
 
 variables.keys().map((key) => {
@@ -26,7 +28,9 @@ variables.keys().map((key) => {
 
 scripts.keys().map((key) => {
   const token = key.match(/(?<=\/)[a-zA-Z0-9]*(?=.script.ejs)/)?.[0];
-  js[token as string] = scripts(key);
+  if (token) {
+    js[token as string] = scripts(key);
+  }
 });
 
 /**
@@ -64,9 +68,7 @@ export class TemplateService {
     }
     this.config = reactive<{ [key: string]: string }>(config);
     // 页面首次展示时，渲染一遍
-    // onMounted(() => {
     this.render();
-    // });
     // config 改变时 重新渲染
     watch(this.config, () => {
       this.render();
