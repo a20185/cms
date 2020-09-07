@@ -1,5 +1,5 @@
 import ejs from "ejs";
-import { Ref, reactive, ref, watch } from "@vue/composition-api";
+import { Ref, reactive, ref, watch, nextTick } from "@vue/composition-api";
 
 /**
  * ejs 以及配置表单配置
@@ -95,7 +95,8 @@ export default class TemplateService {
     });
   }
 
-  private render() {
+  private async render() {
+    await nextTick();
     const newConfig = { ...this.config };
     this.html.value = ejs.render(this.template, newConfig, {
       delimiter: "?",

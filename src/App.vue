@@ -2,7 +2,6 @@
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
 import EJSHandler from "@/components/EJSHandler.vue";
-console.log(EJSHandler);
 export default defineComponent({
   name: "App",
   components: { EJSHandler },

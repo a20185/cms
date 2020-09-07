@@ -15,7 +15,7 @@ export default class WidgetService extends TemplateService {
   y: number;
   w: number;
   h: number;
-  i = ~~(Math.random() * 1000) + Date.now();
+  i: number;
   constructor(template: string, variables: Variable[], js: string) {
     super(template, variables, js);
     this.padding = ref(0);
@@ -24,5 +24,6 @@ export default class WidgetService extends TemplateService {
     this.y = 0;
     this.w = 4;
     this.h = 4;
+    this.i = ~~(Math.random() * 1000) + Date.now();
   }
 }

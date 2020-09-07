@@ -36,7 +36,7 @@ export default defineComponent({
   >
     <grid-layout
       :layout="layoutService.list.value"
-      @layout-updated="layoutService.handleLayoutChange(layoutService,$event)"
+      @layout-updated="layoutService.handleLayoutChange($event)"
       :col-num="layoutService.colNum.value"
       :row-height="40"
       :is-draggable="true"
@@ -50,12 +50,9 @@ export default defineComponent({
         :w="item.w"
         :h="item.h"
         :i="item.i"
-        :key="index"
+        :key="item.i"
       >
-        <div
-          @mousedown="layoutService.handleSelect(layoutService.list.value[index])"
-          style="height:100%;"
-        >
+        <div @mousedown="layoutService.handleSelect(index)" style="height:100%;">
           <widget-display :widget="layoutService.list.value[index]"></widget-display>
         </div>
       </grid-item>

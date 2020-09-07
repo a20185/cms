@@ -11,21 +11,26 @@ import WidgetForm from "@/components/WidgetForm.vue";
 import WidgetService from "@/components/WidgetService";
 import Layout from "@/components/Layout.vue";
 import temps from "@/templates";
-
+import EJSHandlerService, { HandlerData } from "./EJSHandlerService";
 export default defineComponent({
   name: "App",
   components: { WidgetDisplay, WidgetForm, Layout },
-  setup() {
-    const widget = new WidgetService(...temps.test);
-    const handlerData = {
-      pc: ref([widget]),
-      tab: ref([widget]),
-      mob: ref([widget]),
+  props: ["data"],
+  setup(props: { data?: HandlerData }) {
+    const handlerService = EJSHandlerService.setup(props.data);
+    handlerService.handlerData = {
+      pc: ref([new WidgetService(...temps.test)]) as any,
+      tab: ref([
+        new WidgetService(...temps.test),
+        new WidgetService(...temps.test),
+        new WidgetService(...temps.test),
+        new WidgetService(...temps.test),
+        new WidgetService(...temps.test),
+      ]) as any,
+      mob: ref([new WidgetService(...temps.test)]) as any,
     };
-    return {
-      widget,
-      handlerData,
-    };
+    watch(handlerService.selectedWidget, console.log);
+    return handlerService;
   },
 });
 </script>
@@ -45,7 +50,8 @@ export default defineComponent({
     </a-tabs>
     <a-space>
       <a-card>
-        <widget-form :widget="widget"></widget-form>
+        <widget-form v-if="selectedWidget" :widget="selectedWidget"></widget-form>
+        <div v-else>请选择组件</div>
       </a-card>
     </a-space>
   </div>

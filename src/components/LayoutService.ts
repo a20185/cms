@@ -1,5 +1,14 @@
 import WidgetService from "./WidgetService";
-import { ref, Ref, computed, ComputedRef } from "@vue/composition-api";
+import {
+  ref,
+  Ref,
+  computed,
+  ComputedRef,
+  inject,
+  nextTick,
+  isRef,
+} from "@vue/composition-api";
+import EJSHandlerService from "./EJSHandlerService";
 
 export enum PLATFORM {
   PC = "pc",
@@ -9,12 +18,26 @@ export enum PLATFORM {
 
 export default class LayoutService {
   list: Ref<WidgetService[]>;
-  selected: WidgetService | null = null;
   wrapperWidth: ComputedRef<string>; // 部件宽度
   wrapperSpan: ComputedRef<number>; // 部件列宽
   colNum: ComputedRef<number>; // 部件列数
   wrapperBack: ComputedRef<string>; // 部件背景
+  handlerService: EJSHandlerService | undefined;
+
+  handleSelect = (idx: any) => {
+    if (this.handlerService)
+      this.handlerService.selectedWidget.value = this.list.value[idx];
+  };
+  handleLayoutChange = (e: WidgetService[]) => {
+    for (let key in e) {
+      this.list.value[key as any].x = e[key].x;
+      this.list.value[key as any].y = e[key].y;
+      this.list.value[key as any].w = e[key].w;
+      this.list.value[key as any].h = e[key].h;
+    }
+  };
   constructor(list: Ref<WidgetService[]>, platform: PLATFORM) {
+    this.handlerService = inject(EJSHandlerService.token);
     this.list = ref([]);
     this.list.value = list.value;
     this.wrapperWidth = computed(() =>
@@ -42,12 +65,5 @@ export default class LayoutService {
   }
   handleListChange(e: any) {
     this.list = e;
-  }
-  handleSelect(item: WidgetService) {
-    this.selected = item;
-  }
-
-  handleLayoutChange(service: LayoutService, e: any) {
-    service.list.value = e;
   }
 }
