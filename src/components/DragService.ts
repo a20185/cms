@@ -71,7 +71,6 @@ export default class DragService {
       for (let key in this.dragRefList.value) {
         const dragRef = this.dragRefList.value[key];
         if (!dragRef) return;
-        console.log(dragRef);
         dragRef.draggable = true;
         dragRef.addEventListener("drag", this.drag.bind(this));
         dragRef.addEventListener("dragstart", (e: DragEvent) =>

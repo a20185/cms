@@ -1,30 +1,30 @@
-import TemplateService from "@/templates/TemplateService";
 import { WrappedFormUtils } from "ant-design-vue/types/form/form";
+import WidgetService from "./WidgetService";
 
 /**
  * 模板配置表单服务
  *
  * @export
- * @class TemplateFormService
+ * @class WidgetFormService
  */
-export default class TemplateFormService {
-  template: TemplateService;
+export default class WidgetFormService {
+  widget: WidgetService;
   root: any;
   configForm: WrappedFormUtils;
-  constructor(template: TemplateService, root: any) {
-    this.template = template;
+  constructor(widget: WidgetService, root: any) {
+    this.widget = widget;
     this.root = root;
     this.configForm = root.$form.createForm(root, {
       name: "configForm",
     });
     this.configForm.getFieldDecorator("keys", {
-      initialValue: this.template.config,
+      initialValue: this.widget.config,
       preserve: true,
     });
   }
 
   findVariableByKey(key: string) {
-    return this.template.variables.find((el) => el.name === key);
+    return this.widget.variables.find((el) => el.name === key);
   }
 
   getLabel(key: string) {
@@ -40,7 +40,7 @@ export default class TemplateFormService {
   }
 
   getInitialValue(key: string) {
-    return this.template.config[key] || undefined;
+    return this.widget.config[key] || undefined;
   }
 
   /**
@@ -53,7 +53,7 @@ export default class TemplateFormService {
     e.preventDefault();
     this.configForm.validateFields((_, val) => {
       for (let key in val.keys) {
-        this.template.config[key] = val.names[val.keys[key]];
+        this.widget.config[key] = val.names[val.keys[key]];
       }
     });
   }

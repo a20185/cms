@@ -1,12 +1,16 @@
 <script lang="ts">
 import TemplateService from "@/templates/TemplateService";
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent, watch } from "@vue/composition-api";
 import TemplateDisplay from "./TemplateDisplay.vue";
+import WidgetService from "./WidgetService";
 
 export default defineComponent({
-  name: "Widget",
+  name: "WidgetDisplay",
   components: { TemplateDisplay },
-  props: ["template", "padding", "margin", "border"],
+  props: ["widget", "widgetStyle"],
+  setup(props: { widget: WidgetService; widgetStyle: string }) {
+    if (props.widgetStyle) props.widget.style.value = props.widgetStyle;
+  },
 });
 </script>
 
@@ -16,8 +20,8 @@ export default defineComponent({
       <a-button>编辑</a-button>
       <a-button type="danger">删除</a-button>
     </div>
-    <div class="content" :style="{padding,margin,border}">
-      <template-display :template="template" />
+    <div class="content" :style="widget.style.value">
+      <template-display :template="widget" />
     </div>
   </div>
 </template>

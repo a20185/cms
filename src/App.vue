@@ -1,19 +1,32 @@
 <script lang="ts">
-import { defineComponent, reactive, ref } from "@vue/composition-api";
-import TemplateDisplay from "@/components/TemplateDisplay.vue";
-import TemplateForm from "@/components/TemplateForm.vue";
-import Widget from "@/components/Widget.vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  watch,
+  watchEffect,
+} from "@vue/composition-api";
+import WidgetDisplay from "@/components/WidgetDisplay.vue";
+import WidgetForm from "@/components/WidgetForm.vue";
+import LayoutContent from "@/components/LayoutContent.vue";
 
 import temps from "./templates";
-import TemplateService from "@/templates/TemplateService";
+import WidgetService from "@/components/WidgetService";
 
 import Test from "@/components/Test.vue";
 export default defineComponent({
   name: "App",
-  components: { TemplateDisplay, TemplateForm, Test, Widget },
+  components: { WidgetDisplay, WidgetForm, Test, LayoutContent },
   setup() {
+    const widget = new WidgetService(
+      ...temps.test,
+      "background-color:black;color:white;"
+    );
+    watch(widget.style, (val) => {
+      console.log(val);
+    });
     return {
-      testTemplate: new TemplateService(...temps.test),
+      widget,
     };
   },
 });
@@ -21,12 +34,12 @@ export default defineComponent({
 
 <template>
   <a-space>
-    <widget :template="testTemplate" padding="20px" margin="20px" border="2px solid black" />
+    <layout-content></layout-content>
     <a-card>
-      <template-display :template="testTemplate"></template-display>
+      <widget-display :widget="widget"></widget-display>
     </a-card>
     <a-card>
-      <template-form :template="testTemplate"></template-form>
+      <widget-form :widget="widget"></widget-form>
     </a-card>
     <test />
   </a-space>
