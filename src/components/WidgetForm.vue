@@ -15,8 +15,11 @@ export default defineComponent({
   setup(props: { widget: WidgetService }, ctx: SetupContext) {
     return {
       formService: new WidgetFormService(props.widget, ctx.root),
-      changeStyle(e: any) {
-        props.widget.style.value = e.target.value;
+      changePadding(e: any) {
+        props.widget.padding.value = e;
+      },
+      changeMargin(e: any) {
+        props.widget.margin.value = e;
       },
     };
   },
@@ -26,11 +29,14 @@ export default defineComponent({
 <template>
   <div>
     <a-divider>自定义外部样式</a-divider>
-    <a-textarea
-      :autosize="{minRows: 4,maxRows: 10}"
-      :value="widget.style.value"
-      @change="changeStyle"
-    ></a-textarea>
+    <a-form>
+      <a-form-item label="内边距">
+        <a-input-number :value="widget.padding.value" @change="changePadding"></a-input-number>
+      </a-form-item>
+      <a-form-item label="外边距">
+        <a-input-number :value="widget.margin.value" @change="changeMargin"></a-input-number>
+      </a-form-item>
+    </a-form>
     <a-divider>自定义组件配置</a-divider>
     <a-form :form="formService.configForm" @submit.prevent="formService.submit">
       <a-form-item

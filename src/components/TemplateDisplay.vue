@@ -29,5 +29,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <div ref="shadowDisplayer"></div>
+  <div ref="shadowDisplayer" style="height:100%;"></div>
 </template>

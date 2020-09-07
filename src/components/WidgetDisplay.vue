@@ -7,20 +7,20 @@ import WidgetService from "./WidgetService";
 export default defineComponent({
   name: "WidgetDisplay",
   components: { TemplateDisplay },
-  props: ["widget", "widgetStyle"],
-  setup(props: { widget: WidgetService; widgetStyle: string }) {
-    if (props.widgetStyle) props.widget.style.value = props.widgetStyle;
-  },
+  props: ["widget"],
 });
 </script>
 
 <template>
   <div class="widget-wrapper">
-    <div class="mask">
+    <!-- <div class="mask">
       <a-button>编辑</a-button>
       <a-button type="danger">删除</a-button>
-    </div>
-    <div class="content" :style="widget.style.value">
+    </div>-->
+    <div
+      class="content"
+      :style="{padding: widget.padding.value+'px',margin: widget.margin.value+'px'}"
+    >
       <template-display :template="widget" />
     </div>
   </div>
@@ -52,6 +52,7 @@ export default defineComponent({
     }
   }
   .content {
+    height: 100%;
     z-index: 1;
   }
 }

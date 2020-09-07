@@ -124,6 +124,7 @@ export default class TemplateService {
       // 内容节点
       const content = document.createElement("div");
       content.innerHTML = this.html.value;
+      content.style.height = "100%";
       nodeRef.appendChild(content);
       // 脚本
       nodeRef.appendChild(this.getScriptNode());
