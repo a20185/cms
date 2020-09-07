@@ -9,15 +9,9 @@ import {
 } from "@vue/composition-api";
 // @ts-ignore
 import VueGridLayout from "vue-grid-layout";
-import LayoutService from "./LayoutService";
+import LayoutService, { PLATFORM } from "./LayoutService";
 import WidgetService from "./WidgetService";
 import WidgetDisplay from "./WidgetDisplay.vue";
-
-export enum PLATFORM {
-  PC = "pc",
-  Tab = "tab",
-  Mob = "mob",
-}
 
 export default defineComponent({
   name: "Layout",
@@ -28,62 +22,29 @@ export default defineComponent({
   },
   props: ["list", "platform"],
   setup(props: { list: Ref<WidgetService[]>; platform: PLATFORM }) {
-    console.log(props.list);
-    const wrapperStyle = computed(() =>
-      props.platform === PLATFORM.PC
-        ? "1032px"
-        : props.platform === PLATFORM.Tab
-        ? "816px"
-        : "336px"
-    );
-    const wrapperSpan = computed(() =>
-      props.platform === PLATFORM.PC
-        ? 42
-        : props.platform === PLATFORM.Tab
-        ? 67
-        : 55
-    );
-    const colNum = computed(() =>
-      props.platform === PLATFORM.PC
-        ? 24
-        : props.platform === PLATFORM.Tab
-        ? 12
-        : 6
-    );
-    const wrapperBack = computed(
-      () => `repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent ${wrapperSpan.value}px,
-    rgba(0, 0, 0, 0.2),
-    rgba(0, 0, 0, 0.2) ${wrapperSpan.value + 1}px
-  )`
-    );
     return {
-      handleLayoutChange(e: any) {
-        props.list.value = e;
-      },
-      wrapperStyle,
-      wrapperBack,
-      colNum,
+      layoutService: new LayoutService(props.list, props.platform),
     };
   },
 });
 </script>
 
 <template>
-  <div class="layout-wrapper" :style="{width:wrapperStyle,background:wrapperBack}">
+  <div
+    class="layout-wrapper"
+    :style="{width:layoutService.wrapperWidth.value,background:layoutService.wrapperBack.value}"
+  >
     <grid-layout
-      :layout="list.value"
-      @layout-updated="handleLayoutChange"
-      :col-num="colNum"
+      :layout="layoutService.list.value"
+      @layout-updated="layoutService.handleLayoutChange(layoutService,$event)"
+      :col-num="layoutService.colNum.value"
       :row-height="40"
       :is-draggable="true"
       :is-resizable="true"
       :margin="[0, 0]"
     >
       <grid-item
-        v-for="(item,index) in list.value"
+        v-for="(item,index) in layoutService.list.value"
         :x="item.x"
         :y="item.y"
         :w="item.w"
@@ -91,7 +52,12 @@ export default defineComponent({
         :i="item.i"
         :key="index"
       >
-        <widget-display :widget="list.value[index]"></widget-display>
+        <div
+          @mousedown="layoutService.handleSelect(layoutService.list.value[index])"
+          style="height:100%;"
+        >
+          <widget-display :widget="layoutService.list.value[index]"></widget-display>
+        </div>
       </grid-item>
     </grid-layout>
   </div>
