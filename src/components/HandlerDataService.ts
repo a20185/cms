@@ -42,7 +42,7 @@ export default class HandlerDataService {
   }
   refreshLayout = (plateForm: "pc" | "mobile" | "tablet", layout: Layout[]) => {
     for (let key in layout) {
-      this.handlerData[plateForm][key].layout = layout[key];
+      this.handlerData[plateForm][key].layout = { ...layout[key] };
     }
   };
 

@@ -25,9 +25,10 @@ export default defineComponent({
     const handlerDataService = inject(HandlerDataService.token);
     if (!handlerDataService)
       throw new Error("layout must used inside the EJSHandler");
-    let layoutList = computed(() =>
-      handlerDataService.handlerData[props.platform].map((el) => el.layout)
+    let layoutList = handlerDataService.handlerData[props.platform].map(
+      (el) => el.layout
     );
+
     const widgetList = computed(() =>
       handlerDataService.handlerData[props.platform].map((el) => el.data)
     );
