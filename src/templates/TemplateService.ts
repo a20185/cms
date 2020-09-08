@@ -58,6 +58,7 @@ export interface Variable {
  * @class TemplateService
  */
 export default class TemplateService {
+  name: string;
   template: string;
   variables: Variable[];
   js: string;
@@ -67,7 +68,7 @@ export default class TemplateService {
    *
    * @memberof TemplateService
    */
-  html: Ref<string>;
+  html: string;
 
   /**
    * as a model
@@ -76,11 +77,17 @@ export default class TemplateService {
    */
   config: { [key: string]: string };
 
-  constructor(template: string, variables: Variable[], js: string) {
+  constructor(
+    name: string,
+    template: string,
+    variables: Variable[],
+    js: string
+  ) {
+    this.name = name;
     this.template = template;
     this.variables = variables;
     this.js = js;
-    this.html = ref("");
+    this.html = "";
 
     const config: { [key: string]: string } = {};
     for (let item of this.variables) {
@@ -98,7 +105,7 @@ export default class TemplateService {
   private async render() {
     await nextTick();
     const newConfig = { ...this.config };
-    this.html.value = ejs.render(this.template, newConfig, {
+    this.html = ejs.render(this.template, newConfig, {
       delimiter: "?",
     });
   }
@@ -124,7 +131,7 @@ export default class TemplateService {
       }
       // 内容节点
       const content = document.createElement("div");
-      content.innerHTML = this.html.value;
+      content.innerHTML = this.html;
       content.style.height = "100%";
       nodeRef.appendChild(content);
       // 脚本

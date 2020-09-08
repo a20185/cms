@@ -6,51 +6,41 @@ import {
   watch,
   watchEffect,
 } from "@vue/composition-api";
-import WidgetDisplay from "@/components/WidgetDisplay.vue";
-import WidgetForm from "@/components/WidgetForm.vue";
-import WidgetService from "@/components/WidgetService";
 import Layout from "@/components/Layout.vue";
 import temps from "@/templates";
-import EJSHandlerService, { HandlerData } from "./EJSHandlerService";
+import HandlerDataService from "./HandlerDataService";
+import TemplateForm from "./TemplateForm.vue";
 export default defineComponent({
   name: "App",
-  components: { WidgetDisplay, WidgetForm, Layout },
-  props: ["data"],
-  setup(props: { data?: HandlerData }) {
-    const handlerService = EJSHandlerService.setup(props.data);
-    handlerService.handlerData = {
-      pc: ref([new WidgetService(...temps.test)]) as any,
-      tab: ref([
-        new WidgetService(...temps.test),
-        new WidgetService(...temps.test),
-        new WidgetService(...temps.test),
-        new WidgetService(...temps.test),
-        new WidgetService(...temps.test),
-      ]) as any,
-      mob: ref([new WidgetService(...temps.test)]) as any,
+  components: { TemplateForm, Layout },
+  setup() {
+    const handlerDataService = HandlerDataService.getData();
+    handlerDataService.add("pc", "test");
+    console.log(handlerDataService.handlerData);
+    return {
+      handlerData: handlerDataService.handlerData,
+      selectedWidget: handlerDataService.selectWidget,
     };
-    watch(handlerService.selectedWidget, console.log);
-    return handlerService;
   },
 });
 </script>
 
 <template>
   <div class="ejs-handler-wrap">
-    <a-tabs default-active-key="1">
-      <a-tab-pane key="1" tab="桌面端" style="overflow:auto;">
-        <layout :list="handlerData.pc" platform="pc"></layout>
+    <a-tabs default-active-key="1" style="width:100%;">
+      <a-tab-pane key="1" tab="桌面端" style="overflow: auto;">
+        <layout platform="pc"></layout>
       </a-tab-pane>
-      <a-tab-pane key="2" tab="平板端">
-        <layout :list="handlerData.tab" platform="tab"></layout>
+      <a-tab-pane key="2" tab="平板端" style="overflow: auto;">
+        <layout platform="tablet"></layout>
       </a-tab-pane>
-      <a-tab-pane key="3" tab="移动端">
-        <layout :list="handlerData.mob" platform="mob"></layout>
+      <a-tab-pane key="3" tab="移动端" style="overflow: auto;">
+        <layout platform="mobile"></layout>
       </a-tab-pane>
     </a-tabs>
     <a-space>
       <a-card>
-        <widget-form v-if="selectedWidget" :widget="selectedWidget"></widget-form>
+        <template-form v-if="selectedWidget"></template-form>
         <div v-else>请选择组件</div>
       </a-card>
     </a-space>

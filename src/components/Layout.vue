@@ -2,6 +2,7 @@
 import {
   computed,
   defineComponent,
+  inject,
   Ref,
   ref,
   watch,
@@ -9,42 +10,82 @@ import {
 } from "@vue/composition-api";
 // @ts-ignore
 import VueGridLayout from "vue-grid-layout";
-import LayoutService, { PLATFORM } from "./LayoutService";
-import WidgetService from "./WidgetService";
-import WidgetDisplay from "./WidgetDisplay.vue";
+import TemplateDisplay from "./TemplateDisplay.vue";
+import HandlerDataService, { Widget } from "./HandlerDataService";
 
 export default defineComponent({
   name: "Layout",
   components: {
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
-    WidgetDisplay,
+    TemplateDisplay,
   },
-  props: ["list", "platform"],
-  setup(props: { list: Ref<WidgetService[]>; platform: PLATFORM }) {
+  props: ["platform"],
+  setup(props: { platform: "pc" | "mobile" | "tablet" }) {
+    const handlerDataService = inject(HandlerDataService.token);
+    if (!handlerDataService)
+      throw new Error("layout must used inside the EJSHandler");
+    let layoutList = computed(() =>
+      handlerDataService.handlerData[props.platform].map((el) => el.layout)
+    );
+    const widgetList = computed(() =>
+      handlerDataService.handlerData[props.platform].map((el) => el.data)
+    );
+    const wrapperWidth = computed(() =>
+      props.platform === "pc"
+        ? "1032px"
+        : props.platform === "tablet"
+        ? "816px"
+        : "336px"
+    );
+    const wrapperSpan = computed(() =>
+      props.platform === "pc" ? 42 : props.platform === "tablet" ? 67 : 55
+    );
+    const colNum = computed(() =>
+      props.platform === "pc" ? 24 : props.platform === "tablet" ? 12 : 6
+    );
+    const wrapperBack = computed(
+      () => `repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent ${wrapperSpan.value}px,
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.2) ${wrapperSpan.value + 1}px
+    )`
+    );
     return {
-      layoutService: new LayoutService(props.list, props.platform),
+      wrapperWidth,
+      wrapperSpan,
+      colNum,
+      wrapperBack,
+      layoutList,
+      widgetList,
+      layoutUpdate(e: any) {
+        if (!handlerDataService) return;
+        handlerDataService.refreshLayout(props.platform, e);
+        layoutList = e;
+      },
+      select(e: any) {
+        handlerDataService.select(props.platform, e);
+      },
     };
   },
 });
 </script>
 
 <template>
-  <div
-    class="layout-wrapper"
-    :style="{width:layoutService.wrapperWidth.value,background:layoutService.wrapperBack.value}"
-  >
+  <div class="layout-wrapper" :style="{width:wrapperWidth,background:wrapperBack}">
     <grid-layout
-      :layout="layoutService.list.value"
-      @layout-updated="layoutService.handleLayoutChange($event)"
-      :col-num="layoutService.colNum.value"
+      :layout="layoutList"
+      @layout-updated="layoutUpdate"
+      :col-num="colNum"
       :row-height="40"
       :is-draggable="true"
       :is-resizable="true"
       :margin="[0, 0]"
     >
       <grid-item
-        v-for="(item,index) in layoutService.list.value"
+        v-for="(item,index) in layoutList"
         :x="item.x"
         :y="item.y"
         :w="item.w"
@@ -52,8 +93,8 @@ export default defineComponent({
         :i="item.i"
         :key="item.i"
       >
-        <div @mousedown="layoutService.handleSelect(index)" style="height:100%;">
-          <widget-display :widget="layoutService.list.value[index]"></widget-display>
+        <div @mousedown="select(index)" style="height:100%;">
+          <template-display :template="widgetList[index]"></template-display>
         </div>
       </grid-item>
     </grid-layout>

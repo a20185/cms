@@ -9,9 +9,10 @@ import {
   nextTick,
 } from "@vue/composition-api";
 export default defineComponent({
-  name: "Widget",
+  name: "widget",
   props: ["template"],
   setup(props: { template: TemplateService }, ctx) {
+    console.log(props.template);
     const shadowDisplayer = ref<HTMLElement>(null as any);
     let shadow: ShadowRoot = null as any;
     onMounted(() => {
