@@ -1,5 +1,5 @@
 import ejs from "ejs";
-import { Ref, reactive, ref, watch, nextTick } from "@vue/composition-api";
+import { reactive, watch, nextTick } from "@vue/composition-api";
 
 /**
  * ejs 以及配置表单配置

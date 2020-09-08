@@ -8,6 +8,8 @@ import {
   toRef,
   unref,
   watchEffect,
+  markRaw,
+  watch,
 } from "@vue/composition-api";
 import HandlerDataService from "./HandlerDataService";
 export default defineComponent({
@@ -23,7 +25,7 @@ export default defineComponent({
       name: "configForm",
     });
     configForm.getFieldDecorator("keys", {
-      initialValue: selected.value?.config || {},
+      initialValue: { ...(selected.value?.config || {}) },
     });
     const findVariableByKey = (key: string) =>
       selected.value?.variables.find((el) => el.name === key);
@@ -31,9 +33,10 @@ export default defineComponent({
       configForm,
       submit() {
         configForm.validateFields((_, val) => {
-          for (let key in val.keys) {
+          for (let key in val.names) {
             if (!selected.value) return;
-            selected.value.config[key] = val.names[val.keys[key]];
+            console.log(selected.value);
+            selected.value.config[key] = val.names[key];
           }
         });
       },
@@ -63,10 +66,11 @@ export default defineComponent({
         :key="k"
         :required="false"
       >
+        {{k}}{{index}}
         <component
           :is="getFormComponent(index)"
           v-bind="getFormProps(index)"
-          v-decorator="[`names[${k}]`,{initialValue:getInitialValue(index) }]"
+          v-decorator="[`names[${index}]`]"
         ></component>
       </a-form-item>
       <a-form-item>
