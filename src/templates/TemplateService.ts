@@ -41,6 +41,14 @@ export interface Variable {
   formComponent?: string;
 
   /**
+   * 表单值的字段
+   *
+   * @type {string}
+   * @memberof Variable
+   */
+  formValueProp?: string;
+
+  /**
    * 表单组件参数
    *
    * @type {{ [key: string]: any }}

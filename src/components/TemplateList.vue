@@ -12,7 +12,6 @@ export default defineComponent({
     return {
       list,
       handleDrag(key: string, e: DragEvent) {
-        console.log(key, e);
         if (!e.dataTransfer) return;
         e.dataTransfer.setData("text/plain", key);
       },

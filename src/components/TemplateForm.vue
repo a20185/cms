@@ -61,6 +61,9 @@ export default defineComponent({
       getFormProps(key: string) {
         return findVariableByKey(key)?.formComponentProps || {};
       },
+      getValueProp(key: string) {
+        return findVariableByKey(key)?.formValueProp || "value";
+      },
     };
   },
 });
@@ -75,11 +78,10 @@ export default defineComponent({
         :key="k"
         :required="false"
       >
-        {{initial[index]}}
         <component
           :is="getFormComponent(index)"
           v-bind="getFormProps(index)"
-          v-decorator="[`names[${index}]`,{initialValue: initial[index]}]"
+          v-decorator="[`names[${index}]`,{initialValue: initial[index],valuePropName:getValueProp(index)}]"
         ></component>
       </a-form-item>
       <a-form-item>

@@ -9,6 +9,7 @@ const variable: Variable[] = [
       size: "small",
       placeholder: "fuckfuckfuck",
     },
+    formValueProp: "value",
     initialValue: "fuck",
   },
 ];

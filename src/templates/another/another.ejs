@@ -13,7 +13,11 @@
   <div data-param="<?= test?>"></div>
 
   <div class="ejs-red">sfsfsfsf</div>
-  <div class="btn-group" role="group" aria-label="...">
+  <div
+    class="btn-group <?= fuck==='red'?'bg-danger text-white':'bg-white text-dark'?>"
+    role="group"
+    aria-label="..."
+  >
     <button type="button" class="btn btn-default">Left</button>
     <button type="button" class="btn btn-default">Middle</button>
     <button type="button" class="btn btn-default">Right</button>

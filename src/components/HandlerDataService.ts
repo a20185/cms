@@ -67,7 +67,6 @@ export default class HandlerDataService {
   };
 
   select = (plateForm: "pc" | "mobile" | "tablet", key: number) => {
-    console.log(key);
     this.selectWidget.value = this.handlerData[plateForm][key];
   };
 }
