@@ -3,6 +3,7 @@ import {
   computed,
   defineComponent,
   inject,
+  reactive,
   Ref,
   ref,
   watch,
@@ -25,12 +26,11 @@ export default defineComponent({
     const handlerDataService = inject(HandlerDataService.token);
     if (!handlerDataService)
       throw new Error("layout must used inside the EJSHandler");
-    let layoutList = handlerDataService.handlerData[props.platform].map(
+    const layoutList = handlerDataService.handlerData[props.platform].map(
       (el) => el.layout
     );
-
-    const widgetList = computed(() =>
-      handlerDataService.handlerData[props.platform].map((el) => el.data)
+    const widgetList = handlerDataService.handlerData[props.platform].map(
+      (el) => el.data
     );
     const wrapperWidth = computed(() =>
       props.platform === "pc"
@@ -64,10 +64,21 @@ export default defineComponent({
       layoutUpdate(e: any) {
         if (!handlerDataService) return;
         handlerDataService.refreshLayout(props.platform, e);
-        layoutList = e;
+        for (let key in e) {
+          layoutList[parseInt(key)] = e[key];
+        }
       },
       select(e: any) {
         handlerDataService.select(props.platform, e);
+      },
+      handleOver(e: any) {
+        e.preventDefault();
+      },
+      handleDrop(e: any) {
+        const key = e.dataTransfer.getData("text/plain");
+        const result = handlerDataService.add(props.platform, key);
+        layoutList.push(result.layout);
+        widgetList.push(result.data);
       },
     };
   },
@@ -75,7 +86,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="layout-wrapper" :style="{width:wrapperWidth,background:wrapperBack}">
+  <div
+    class="layout-wrapper"
+    @dragover="handleOver"
+    @drop="handleDrop"
+    :style="{width:wrapperWidth,background:wrapperBack}"
+  >
     <grid-layout
       :layout="layoutList"
       @layout-updated="layoutUpdate"

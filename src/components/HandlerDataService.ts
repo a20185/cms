@@ -1,3 +1,4 @@
+import Vue from "vue";
 import templates from "@/templates";
 import TemplateService from "@/templates/TemplateService";
 import { InjectionKey, provide, Ref, ref } from "@vue/composition-api";
@@ -47,7 +48,7 @@ export default class HandlerDataService {
   };
 
   add = (plateForm: "pc" | "mobile" | "tablet", name: string) => {
-    this.handlerData[plateForm].push({
+    const newData = {
       data: new TemplateService(name, ...templates[name]),
       layout: {
         x: 0,
@@ -56,7 +57,9 @@ export default class HandlerDataService {
         h: 4,
         i: (~~(Math.random() * 1000 + Date.now())).toString(),
       },
-    });
+    };
+    this.handlerData[plateForm].push(newData);
+    return newData;
   };
 
   remove = (plateForm: "pc" | "mobile" | "tablet", key: number) => {
@@ -64,6 +67,7 @@ export default class HandlerDataService {
   };
 
   select = (plateForm: "pc" | "mobile" | "tablet", key: number) => {
+    console.log(key);
     this.selectWidget.value = this.handlerData[plateForm][key];
   };
 }

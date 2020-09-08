@@ -18,24 +18,36 @@ export default defineComponent({
     const handlerDataService = inject(HandlerDataService.token);
     if (!handlerDataService)
       throw new Error("template form must used at EjsHandler");
-    const selected = computed(
-      () => handlerDataService.selectWidget.value?.data
-    );
     const configForm = ctx.root.$form.createForm(ctx.root, {
       name: "configForm",
     });
-    configForm.getFieldDecorator("keys", {
-      initialValue: { ...(selected.value?.config || {}) },
-    });
+    const selected = computed(
+      () => handlerDataService.selectWidget.value?.data
+    );
+    let initial: any = ref(null);
+    watch(
+      selected,
+      (val) => {
+        configForm.resetFields();
+        initial.value = { ...val?.config };
+        configForm.getFieldDecorator("keys", {
+          initialValue: initial.value,
+        });
+      },
+      { immediate: true }
+    );
     const findVariableByKey = (key: string) =>
       selected.value?.variables.find((el) => el.name === key);
+    const title = computed(() => selected.value?.name || "...");
     return {
+      title,
       configForm,
+      selected,
+      initial,
       submit() {
         configForm.validateFields((_, val) => {
           for (let key in val.names) {
             if (!selected.value) return;
-            console.log(selected.value);
             selected.value.config[key] = val.names[key];
           }
         });
@@ -49,16 +61,13 @@ export default defineComponent({
       getFormProps(key: string) {
         return findVariableByKey(key)?.formComponentProps || {};
       },
-      getInitialValue(key: string) {
-        return selected.value?.config[key] || undefined;
-      },
     };
   },
 });
 </script>
 
 <template>
-  <a-card title="自定义组件配置">
+  <a-card :title="title+'-自定义组件配置'">
     <a-form :form="configForm" @submit.prevent="submit">
       <a-form-item
         v-for="(k,index) in configForm.getFieldValue('keys')"
@@ -66,11 +75,11 @@ export default defineComponent({
         :key="k"
         :required="false"
       >
-        {{k}}{{index}}
+        {{initial[index]}}
         <component
           :is="getFormComponent(index)"
           v-bind="getFormProps(index)"
-          v-decorator="[`names[${index}]`]"
+          v-decorator="[`names[${index}]`,{initialValue: initial[index]}]"
         ></component>
       </a-form-item>
       <a-form-item>
